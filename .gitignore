@@ -1,11 +1,9 @@
 # ============================================
 # DATA SENSITIF — JANGAN PERNAH COMMIT
-# File berisi data gaji, NIK, dan info karyawan
+# Folder base berisi data gaji, NIK, info karyawan,
+# rules, analisis, dan dummy data
 # ============================================
-base/input.xlsx
-base/output.xlsx
-base/data helper.xlsx
-base/rules.xlsx
+base/
 
 # ============================================
 # Dependencies & Build
