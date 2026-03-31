@@ -1,0 +1,40 @@
+# ============================================
+# DATA SENSITIF — JANGAN PERNAH COMMIT
+# File berisi data gaji, NIK, dan info karyawan
+# ============================================
+base/input.xlsx
+base/output.xlsx
+base/data helper.xlsx
+base/rules.xlsx
+
+# ============================================
+# Dependencies & Build
+# ============================================
+node_modules/
+dist/
+.cache/
+
+# ============================================
+# Python virtual environment
+# ============================================
+.venv/
+
+# ============================================
+# Environment & IDE
+# ============================================
+.env
+.env.local
+.env.*.local
+*.local
+
+# ============================================
+# OS generated files
+# ============================================
+Thumbs.db
+.DS_Store
+desktop.ini
+
+# ============================================
+# Source maps (production security)
+# ============================================
+*.map
