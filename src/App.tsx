@@ -123,7 +123,7 @@ function App() {
         {/* Header */}
         <div className="text-center mb-8">
           <h1 className="text-2xl font-bold text-slate-800">Payslip Converter</h1>
-          <p className="text-sm text-slate-400 mt-1">Payroll → Other Input Entries</p>
+          <p className="text-sm text-slate-400 mt-1">Draft Payroll → Hashmicro Payslip</p>
         </div>
 
         {/* State: Idle */}

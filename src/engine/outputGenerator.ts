@@ -38,7 +38,7 @@ export async function generateSuccessOutput(
   });
 
   const timestamp = formatTimestamp(new Date());
-  const fileName = `Other_Input_Entries_${periode.month}${periode.year}_${timestamp}.xlsx`;
+  const fileName = `Payslip_Hashmicro_${periode.month}${periode.year}_${timestamp}.xlsx`;
 
   return { blob, fileName };
 }
