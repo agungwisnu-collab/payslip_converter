@@ -7,6 +7,7 @@ import ConversionSummaryDisplay from './components/ConversionSummary';
 import ErrorDisplay from './components/ErrorDisplay';
 import DownloadButton from './components/DownloadButton';
 import AnomalyTable from './components/AnomalyTable';
+import TemplateDownload from './components/TemplateDownload';
 import { parseInputFile, validateHeaders, buildColumnMap, ValidationError } from './engine/parser';
 import { convert } from './engine/converter';
 import { generateSuccessOutput, generateAnomalyOutput } from './engine/outputGenerator';
@@ -124,6 +125,9 @@ function App() {
         <div className="text-center mb-8">
           <h1 className="text-2xl font-bold text-slate-800">Payslip Converter</h1>
           <p className="text-sm text-slate-400 mt-1">Draft Payroll → Hashmicro Payslip</p>
+          <div className="mt-2">
+            <TemplateDownload />
+          </div>
         </div>
 
         {/* State: Idle */}
