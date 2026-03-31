@@ -54,10 +54,10 @@ function resolveBptk(
   return null;
 }
 
-function shouldSkipRow(nik: unknown, nama: unknown): boolean {
-  const nikHasDash = typeof nik === 'string' && nik.includes('-');
-  const nameFilled = nama != null && String(nama).trim() !== '';
-  return !nikHasDash && !nameFilled;
+function shouldSkipRow(nik: unknown, nikKtp: unknown): boolean {
+  const nikEmpty = nik == null || String(nik).trim() === '';
+  const nikKtpEmpty = nikKtp == null || String(nikKtp).trim() === '';
+  return nikEmpty && nikKtpEmpty;
 }
 
 export function convert(input: ParsedInput): ConversionResult {
@@ -71,6 +71,7 @@ export function convert(input: ParsedInput): ConversionResult {
 
   // Resolve column positions for all rules
   const nikIdx = columnMap.get('NIK');
+  const nikKtpIdx = columnMap.get('NIK KTP');
   const namaIdx = columnMap.get('NAMA');
   const periodeIdx = columnMap.get('PERIODE');
 
@@ -153,14 +154,15 @@ export function convert(input: ParsedInput): ConversionResult {
     const excelRow = rowIdx + 2; // 1-based, +1 for header
 
     const nikRaw = nikIdx != null ? row[nikIdx] : null;
+    const nikKtpRaw = nikKtpIdx != null ? row[nikKtpIdx] : null;
     const namaRaw = namaIdx != null ? row[namaIdx] : null;
 
-    // Skip row logic
-    if (shouldSkipRow(nikRaw, namaRaw)) {
-      if (nikRaw != null || namaRaw != null) {
+    // Skip row jika NIK dan NIK KTP keduanya kosong
+    if (shouldSkipRow(nikRaw, nikKtpRaw)) {
+      if (nikRaw != null || nikKtpRaw != null) {
         skippedReasons.push({
           row: excelRow,
-          reason: `NIK tanpa dash dan nama kosong (NIK="${nikRaw}", Nama="${namaRaw}")`,
+          reason: `NIK dan NIK KTP kosong (NIK="${nikRaw}", NIK KTP="${nikKtpRaw}")`,
         });
       }
       continue;
