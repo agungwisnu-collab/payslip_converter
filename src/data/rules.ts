@@ -6,7 +6,7 @@ export interface RuleMapping {
 }
 
 export const RULES: RuleMapping[] = [
-  { inputHeader: 'GP NEW', outputCode: 'BASIC', priority: 'default', note: 'Fallback jika TOTAL GAJI PROPORSIONAL = 0' },
+  { inputHeader: 'GP NEW', outputCode: 'BASIC', priority: 'default', note: 'Fallback jika TOTAL GAJI PROPORSIONAL ≤ 0 atau tidak valid' },
   { inputHeader: 'TOTAL GAJI PROPORSIONAL', outputCode: 'BASIC', priority: 'high', note: 'High Priority dibanding GP New' },
   { inputHeader: 'T. JABATAN', outputCode: 'ALW1' },
   { inputHeader: 'T. KEHADIRAN', outputCode: 'ALW2' },

@@ -22,15 +22,18 @@ interface ResolvedRule {
 function resolveBasic(
   gpNewValue: unknown,
   totalGajiPropValue: unknown
-): { value: number; source: string } | null {
+): { value: number; source: string; conflict: boolean } | null {
   const afValid = isNumeric(totalGajiPropValue) && totalGajiPropValue > 0;
   const acValid = isNumeric(gpNewValue) && gpNewValue !== 0;
 
+  if (afValid && acValid) {
+    return { value: totalGajiPropValue, source: 'TOTAL GAJI PROPORSIONAL', conflict: true };
+  }
   if (afValid) {
-    return { value: totalGajiPropValue, source: 'TOTAL GAJI PROPORSIONAL' };
+    return { value: totalGajiPropValue, source: 'TOTAL GAJI PROPORSIONAL', conflict: false };
   }
   if (acValid) {
-    return { value: gpNewValue, source: 'GP NEW' };
+    return { value: gpNewValue, source: 'GP NEW', conflict: false };
   }
   return null;
 }
@@ -234,13 +237,80 @@ export function convert(input: ParsedInput): ConversionResult {
     // Process BASIC (Rule 1: priority)
     const gpNewVal = gpNewIdx != null ? row[gpNewIdx] : null;
     const totalGajiPropVal = totalGajiPropIdx != null ? row[totalGajiPropIdx] : null;
+
+    // ANO-03: Non-numeric value in BASIC columns
+    if (gpNewIdx != null && gpNewVal != null && gpNewVal !== '' && !isNumeric(gpNewVal)) {
+      anomalies.push({
+        row: excelRow,
+        column: columnIndexToLetter(gpNewIdx),
+        employeeName: nama,
+        nik,
+        field: 'GP NEW',
+        value: gpNewVal,
+        errorType: 'ANO-03',
+        description: `Cell berisi "${gpNewVal}" (${typeof gpNewVal}) yang bukan numerik. Kolom: GP NEW. Cell di-skip.`,
+      });
+    }
+    if (totalGajiPropIdx != null && totalGajiPropVal != null && totalGajiPropVal !== '' && !isNumeric(totalGajiPropVal)) {
+      anomalies.push({
+        row: excelRow,
+        column: columnIndexToLetter(totalGajiPropIdx),
+        employeeName: nama,
+        nik,
+        field: 'TOTAL GAJI PROPORSIONAL',
+        value: totalGajiPropVal,
+        errorType: 'ANO-03',
+        description: `Cell berisi "${totalGajiPropVal}" (${typeof totalGajiPropVal}) yang bukan numerik. Kolom: TOTAL GAJI PROPORSIONAL. Cell di-skip.`,
+      });
+    }
+
     const basicResult = resolveBasic(gpNewVal, totalGajiPropVal);
 
+    if (!basicResult) {
+      // Cek apakah kedua kolom kosong (bukan karena non-numeric, yg sudah di-handle ANO-03)
+      const gpNewEmpty = gpNewVal == null || gpNewVal === '' || (isNumeric(gpNewVal) && gpNewVal === 0);
+      const totalGajiPropEmpty = totalGajiPropVal == null || totalGajiPropVal === '' || (isNumeric(totalGajiPropVal) && totalGajiPropVal <= 0);
+      const gpNewNonNumeric = gpNewVal != null && gpNewVal !== '' && !isNumeric(gpNewVal);
+      const totalGajiPropNonNumeric = totalGajiPropVal != null && totalGajiPropVal !== '' && !isNumeric(totalGajiPropVal);
+
+      if ((gpNewEmpty || gpNewNonNumeric) && (totalGajiPropEmpty || totalGajiPropNonNumeric)) {
+        anomalies.push({
+          row: excelRow,
+          column: columnIndexToLetter(gpNewIdx ?? 28),
+          employeeName: nama,
+          nik,
+          field: 'GP NEW / TOTAL GAJI PROPORSIONAL',
+          value: `GP NEW=${gpNewVal ?? ''}, TOTAL GAJI PROP=${totalGajiPropVal ?? ''}`,
+          errorType: 'ANO-07',
+          description: `Kedua kolom GP NEW dan TOTAL GAJI PROPORSIONAL kosong atau tidak valid. BASIC tidak dapat dihasilkan.`,
+        });
+      }
+    }
+
     if (basicResult) {
+      // ANO-05: Both BASIC columns filled
+      if (basicResult.conflict) {
+        anomalies.push({
+          row: excelRow,
+          column: columnIndexToLetter(gpNewIdx ?? 28),
+          employeeName: nama,
+          nik,
+          field: 'GP NEW / TOTAL GAJI PROPORSIONAL',
+          value: `GP NEW=${gpNewVal}, TOTAL GAJI PROP=${totalGajiPropVal}`,
+          errorType: 'ANO-05',
+          description: `Kedua kolom GP NEW (${gpNewVal}) dan TOTAL GAJI PROPORSIONAL (${totalGajiPropVal}) terisi. Seharusnya hanya satu. Menggunakan TOTAL GAJI PROPORSIONAL.`,
+        });
+      }
+
+      // Column letter sesuai source yang dipakai
+      const basicColLetter = basicResult.source === 'TOTAL GAJI PROPORSIONAL'
+        ? columnIndexToLetter(totalGajiPropIdx!)
+        : columnIndexToLetter(gpNewIdx!);
+
       checkAndPushRow(
         outputRows, anomalies, excelRow, nama, nik, 'BASIC',
         basicResult.value, periode,
-        gpNewIdx != null ? columnIndexToLetter(gpNewIdx) : 'AC',
+        basicColLetter,
         basicResult.source
       );
     }
