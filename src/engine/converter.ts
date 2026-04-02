@@ -298,7 +298,7 @@ export function convert(input: ParsedInput): ConversionResult {
           field: 'GP NEW / TOTAL GAJI PROPORSIONAL',
           value: `GP NEW=${gpNewVal}, TOTAL GAJI PROP=${totalGajiPropVal}`,
           errorType: 'ANO-05',
-          description: `Kedua kolom GP NEW (${gpNewVal}) dan TOTAL GAJI PROPORSIONAL (${totalGajiPropVal}) terisi. Seharusnya hanya satu. Menggunakan TOTAL GAJI PROPORSIONAL.`,
+          description: `Kedua kolom GP NEW (${gpNewVal}) dan TOTAL GAJI PROPORSIONAL (${totalGajiPropVal}) terisi. Seharusnya hanya satu.`,
         });
       }
 
