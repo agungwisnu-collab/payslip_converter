@@ -96,7 +96,17 @@ export function convert(input: ParsedInput): ConversionResult {
     if (rule.outputCode === 'BASIC' || rule.outputCode === 'BPTK') continue;
 
     const normalizedHeader = rule.inputHeader.trim().toUpperCase();
-    const colIdx = columnMap.get(normalizedHeader);
+    let colIdx = columnMap.get(normalizedHeader);
+
+    // Support partial matching for headers with variable suffixes
+    if (colIdx == null && rule.partialMatch) {
+      for (const [headerKey, idx] of columnMap.entries()) {
+        if (headerKey.includes(normalizedHeader)) {
+          colIdx = idx;
+          break;
+        }
+      }
+    }
 
     if (colIdx == null) {
       anomalies.push({

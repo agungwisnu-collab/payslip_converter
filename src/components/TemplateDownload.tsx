@@ -98,7 +98,7 @@ function buildGuideSheet(wb: ExcelJS.Workbook) {
     ['U. SEWA KEND', 'SWM', 'Uang sewa kendaraan operasional.', '0'],
     ['KEKURANGAN GAJI', 'ADJ', 'Selisih gaji yang belum dibayarkan di periode sebelumnya.', '0'],
     ['REIMBURSEMENT KESEHATAN', 'AET', 'Penggantian biaya kesehatan karyawan.', '0'],
-    ['LEMBUR', 'OVT', 'Upah lembur berdasarkan jam kerja tambahan.', '200.000'],
+    ['LEMBUR', 'OVT_ALW', 'Upah lembur berdasarkan jam kerja tambahan.', '200.000'],
     ['BONUS SALES (Rp)', 'BONUS', 'Bonus penjualan berdasarkan pencapaian target.', '0'],
     ['KEBIJAKAN CEO', 'CEO', 'Pembayaran khusus berdasarkan kebijakan direksi.', '1.500.000'],
     ['CICILAN PINJAMAN', 'LOAN_DED', 'Potongan cicilan pinjaman karyawan (nilai akan menjadi pengurang).', '0'],
@@ -106,6 +106,7 @@ function buildGuideSheet(wb: ExcelJS.Workbook) {
     ['BPJS KESEHATAN', 'BPJS_KES_EMP', 'Iuran BPJS Kesehatan bagian karyawan.', '250.000'],
     ['BPJS TK PPU', 'BPTK', 'Iuran BPJS Ketenagakerjaan untuk Penerima Upah (karyawan tetap).', '350.000'],
     ['BPJS TK BPU (KHUSUS CS KEMITRAAN)', 'BPTK', 'Iuran BPJS Ketenagakerjaan untuk Bukan Penerima Upah (mitra). Tidak boleh diisi bersamaan dengan BPJS TK PPU.', '0'],
+    ['LAIN LAIN (Potongan PPh 21)', 'PPH21_TER', 'Potongan PPh 21 karyawan. Header kolom bisa bervariasi, cukup mengandung kata "LAIN LAIN".', '0'],
   ];
 
   mappings.forEach((row, i) => {
